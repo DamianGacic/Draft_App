@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Draft Tool</title>
+    <link rel="stylesheet" href="style_copy.css" />
+
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+  </head>
+
+
+
+  <body>
+    <div>
+    <form action="" autocomplete="off">
+
+      <input type="text" id="searchbar" placeholder="add a Champ..."/>
+    </div>
+      <ul class="list"></ul>
+      <script src="script3.js"></script>
+
+    </form>
+    <div class="box-container">
+      <div class="box">
+        <p class="bg-blue">B1</p>
+        <div class="items" id="b1">
+        </div>
+      </div>
+      <div class="box">
+        <p class="bg-red">R1</p>
+        <div class="items" id="r1"></div>
+      </div>
+    </div>
+    <div class="box-container">
+      <div class="box">
+        <p class="bg-blue">B2</p>
+        <div class="items" id="b2">
+        </div>
+      </div>
+      <div class="box">
+        <p class="bg-red">R2</p>
+        <div class="items" id="r2"></div>
+      </div>
+    </div>    <div class="box-container">
+      <div class="box">
+        <p class="bg-blue">B3</p>
+        <div class="items" id="b3">
+        </div>
+      </div>
+      <div class="box">
+        <p class="bg-red">R3</p>
+        <div class="items" id="r3"></div>
+      </div>
+    </div>
+    <div class="box-container">
+      <div class="box">
+        <p class="bg-blue">B4</p>
+        <div class="items" id="b4">
+        </div>
+      </div>
+      <div class="box">
+        <p class="bg-red">R4</p>
+        <div class="items" id="r4"></div>
+      </div>
+    </div>
+    <div class="box-container">
+      <div class="box">
+        <p class="bg-blue">B5</p>
+        <div class="items" id="b5">
+        </div>
+      </div>
+      <div class="box" >
+        <p class="bg-red">R5</p>
+        <div class="items" id="r5">
+        </div>
+      </div>
+    </div>
+    
+    </div>
+    <p id="outb1">B1</p>
+    <p id="outb2">B2</p>
+    <p id="outb3">B3</p>
+    <p id="outb4">B4</p>
+    <p id="outb5">B5</p>
+    <br>
+    <p id="outr1">R1</p>
+    <p id="outr2">R2</p>
+    <p id="outr3">R3</p>
+    <p id="outr4">R4</p>
+    <p id="outr5">R5</p>
+    <br>
+    <p id="outtest"></p>
+    <br>
+    <p id="counter">0</p>
+    <script src="app.js"></script>
+
+
+  <py-config type="json">
+      {
+        "packages": ["numpy","pandas"]
+      }
+  </py-config>
+
+
+  <py-script id="my-script">
+    from js import document
+    from pyodide.ffi.wrappers import add_event_listener
+    )
+
+  </py-script>
+  <py-script id="my-script2">
+    from js import document
+    import pandas as pd
+    from pyodide.ffi.wrappers import add_event_listener
+    from pyodide.http import open_url
+    
+    
+    #funcs
+    def print_team_stats(ally_df, enemy_df):
+      i = len(ally_df)-1
+      aEngagers = ally_df['Engager'].cumsum()[i]
+      aDisengagers = ally_df['Disengager'].cumsum()[i]
+      aFighters = ally_df['Fighter'].cumsum()[i]
+      aRangers = ally_df['Ranger'].cumsum()[i]
+      aSafeCCs = ally_df['SafeCC'].cumsum()[i]
+      aHardengages = ally_df['Hardengage'].cumsum()[i]
+      aBurst = ally_df['Burst'].cumsum()[i]
+      aDps = ally_df['Dps'].cumsum()[i]
+      aTankiness = ally_df['Tankiness'].cumsum()[i]
+      aAd = ally_df['Ad'].cumsum()[i]
+      aMd = ally_df['Md'].cumsum()[i]
+  
+      i = len(enemy_df)-1
+      eEngagers = enemy_df['Engager'].cumsum()[i]
+      eDisengagers = enemy_df['Disengager'].cumsum()[i]
+      eFighters = enemy_df['Fighter'].cumsum()[i]
+      eRangers = enemy_df['Ranger'].cumsum()[i]
+      eSafeCCs = enemy_df['SafeCC'].cumsum()[i]
+      eHardengages = enemy_df['Hardengage'].cumsum()[i]
+      eBurst = enemy_df['Burst'].cumsum()[i]
+      eDps = enemy_df['Dps'].cumsum()[i]
+      eTankiness = enemy_df['Tankiness'].cumsum()[i]
+      eAd = enemy_df['Ad'].cumsum()[i]
+      eMd = enemy_df['Md'].cumsum()[i]
+      print("--------------------------------------------------")
+      print("blue stats:                             red stats:")
+      print('Rangers:',aRangers,'                       Rangers:',eRangers)
+      print('Fighters:',aFighters,'                       Fighters:',eFighters)
+      print('Engagers:',aEngagers,'                      Engagers:',eEngagers)
+      print('Disengagers:',aDisengagers,'                   Disengagers:',eDisengagers)
+      print('SafeCCs:',aSafeCCs,'                       SafeCCs:',eSafeCCs)
+      print('Hardengages:',aHardengages,'                  Hardengages:',eHardengages)
+      Rolediff_blue = aFighters * 1.8*eEngagers + aFighters * -1.1*eRangers + aFighters * -0.7*eDisengagers \
+      + aRangers * 1.1*eFighters + aRangers * 1.1*eDisengagers + aRangers * -2.2*eEngagers \
+      + aEngagers *-1.8*eFighters +  + aEngagers * 2.2*eRangers + aEngagers * -0.4*eDisengagers \
+      + aDisengagers * 0.7*eFighters + aDisengagers * -1.1*eRangers + aDisengagers * 0.4*eEngagers
+      Rolediff_blue = Rolediff_blue * 40
+      dmg_split_exp_blue = pow(max(aAd,aMd),1.6) / 5
+      dmg_split_exp_red = pow(max(eAd,eMd),1.6) / 5
+      StatDiff_blue = -1*eTankiness * dmg_split_exp_blue + aBurst * eDps + aDps * eTankiness + aDps  * -1*eBurst + aTankiness * dmg_split_exp_red + aTankiness * -1*eDps + aTankiness * eBurst + eTankiness * aBurst
+      print("Rolediff_blue :", Rolediff_blue)
+      print("StatDiff_blue :", StatDiff_blue)
+      print("enemy tankdiff: ", -1*eTankiness * dmg_split_exp_blue)
+      print("ally burstdiff: ",aBurst * eDps)
+      print("ally dpsdiff: ",aDps * eTankiness)
+      print("enemy burstdiff: ",aDps  * -1*eBurst)
+      print("ally tankdiff: ",aTankiness * dmg_split_exp_red )
+      print("ally antiburstdiff: ",aTankiness * eBurst )
+      print("enemy dpsdiff: ",aTankiness * -1*eDps)
+      return
+  
+    def create_null_champ_dict():
+      champ_dict = {
+      "EnemyAdc" : 0,
+      "EnemySupp" : 0,
+      "EnemyMid" : 0,
+      "EnemyJung" : 0,
+      "EnemyTop" : 0,
+      "AllyAdc" : 0,
+      "AllySupp" : 0,
+      "AllyMid" : 0,
+      "AllyJung" : 0,
+      "AllyTop" : 0}
+      return champ_dict
+    
+    def create_ally_n_enemy_Df(type_df, champ_dict):
+      adf1 = type_df.loc[type_df['Name'] == champ_dict['AllyAdc']]
+      adf2 = type_df.loc[type_df['Name'] == champ_dict['AllySupp']]
+      adf3 = type_df.loc[type_df['Name'] == champ_dict['AllyMid']]
+      adf4 = type_df.loc[type_df['Name'] == champ_dict['AllyJung']]
+      adf5 = type_df.loc[type_df['Name'] == champ_dict['AllyTop']]
+  
+      ally_df = pd.concat([adf1, adf2, adf3, adf4, adf5], ignore_index=True)
+  
+      edf1 = type_df.loc[type_df['Name'] == champ_dict['EnemyAdc']]
+      edf2 = type_df.loc[type_df['Name'] == champ_dict['EnemySupp']]
+      edf3 = type_df.loc[type_df['Name'] == champ_dict['EnemyMid']]
+      edf4 = type_df.loc[type_df['Name'] == champ_dict['EnemyJung']]
+      edf5 = type_df.loc[type_df['Name'] == champ_dict['EnemyTop']]
+  
+      enemy_df = pd.concat([edf1, edf2, edf3, edf4, edf5], ignore_index=True)
+  
+      return ally_df, enemy_df
+
+      #funcs
+    def do_that():
+      champ_dict = create_null_champ_dict()
+      df = pd.read_csv(open_url("https://raw.githubusercontent.com/DamianGacic/csv_test/main/customfull2.csv"))
+      champ_dict['EnemyTop'] = document.getElementById("outr1").textContent
+      champ_dict['EnemyJung'] = document.getElementById("outr2").textContent
+      champ_dict['EnemyMid'] = document.getElementById("outr3").textContent
+      champ_dict['EnemyAdc'] = document.getElementById("outr4").textContent
+      champ_dict['EnemySupp'] = document.getElementById("outr5").textContent
+    
+      champ_dict['AllyTop'] = document.getElementById("outb1").textContent
+      champ_dict['AllyJung'] = document.getElementById("outb2").textContent
+      champ_dict['AllyMid'] = document.getElementById("outb3").textContent
+      champ_dict['AllyAdc'] = document.getElementById("outb4").textContent
+      champ_dict['AllySupp'] = document.getElementById("outb5").textContent
+    
+      ally_df , enemy_df = create_ally_n_enemy_Df(df,champ_dict)
+      print_team_stats(ally_df, enemy_df)
+      return
+    
+  
+    </py-script>
+  <button id="executeButton" py-click="do_that()">Analysis</button>
+
+
+
+
+
+  </body>
+</html>
