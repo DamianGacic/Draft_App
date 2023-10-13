@@ -15,6 +15,11 @@
 
   <body>
     <div>
+        <a href="https://t.co/epQV3dtlY5">click me</a>
+    </div>
+    <p>------- '5'-key for previous field -------- 'space'-key for entry and automatic proceed to next field in draft order -------- '6'-key for analysis ----</p>
+    <p>if you remove a champ from a bucket make sure to move another champ in that bucket afterwards!</p>
+    <div>
     <form action="" autocomplete="off">
 
       <input type="text" id="searchbar" placeholder="add a Champ..."/>
@@ -151,25 +156,71 @@
       print('Fighters:',aFighters,'                       Fighters:',eFighters)
       print('Engagers:',aEngagers,'                      Engagers:',eEngagers)
       print('Disengagers:',aDisengagers,'                   Disengagers:',eDisengagers)
-      print('SafeCCs:',aSafeCCs,'                       SafeCCs:',eSafeCCs)
-      print('Hardengages:',aHardengages,'                  Hardengages:',eHardengages)
-      Rolediff_blue = aFighters * 1.8*eEngagers + aFighters * -1.1*eRangers + aFighters * -0.7*eDisengagers \
-      + aRangers * 1.1*eFighters + aRangers * 1.1*eDisengagers + aRangers * -2.2*eEngagers \
-      + aEngagers *-1.8*eFighters +  + aEngagers * 2.2*eRangers + aEngagers * -0.4*eDisengagers \
-      + aDisengagers * 0.7*eFighters + aDisengagers * -1.1*eRangers + aDisengagers * 0.4*eEngagers
-      Rolediff_blue = Rolediff_blue * 40
-      dmg_split_exp_blue = pow(max(aAd,aMd),1.6) / 5
-      dmg_split_exp_red = pow(max(eAd,eMd),1.6) / 5
-      StatDiff_blue = -1*eTankiness * dmg_split_exp_blue + aBurst * eDps + aDps * eTankiness + aDps  * -1*eBurst + aTankiness * dmg_split_exp_red + aTankiness * -1*eDps + aTankiness * eBurst + eTankiness * aBurst
-      print("Rolediff_blue :", Rolediff_blue)
-      print("StatDiff_blue :", StatDiff_blue)
-      print("Red tankdiff: ", -1*eTankiness * dmg_split_exp_blue)
-      print("Blue burstdiff: ",aBurst * eDps)
-      print("Blue dpsdiff: ",aDps * eTankiness)
-      print("Red burstdiff: ",aDps  * -1*eBurst)
-      print("Blue tankdiff: ",aTankiness * dmg_split_exp_red )
-      print("Blue antiburstdiff: ",aTankiness * eBurst )
-      print("Red dpsdiff: ",aTankiness * -1*eDps)
+      print("")
+      print('SafeCC:',aSafeCCs,'                       SafeCC:',eSafeCCs)
+      print('Hardengage:',aHardengages,'                  Hardengage:',eHardengages)
+      print("")
+
+
+
+      Blue_Fighter_Factor = aFighters * 1.8*eEngagers + aFighters * -1.1*eRangers + aFighters * -0.7*eDisengagers
+      Blue_Ranger_Factor = aRangers * 1.1*eFighters + aRangers * 1.1*eDisengagers + aRangers * -2.2*eEngagers
+      Blue_Engager_Factor = aEngagers *-1.8*eFighters +  + aEngagers * 2.2*eRangers + aEngagers * -0.4*eDisengagers
+      Blue_Disengager_Factor = aDisengagers * 0.7*eFighters + aDisengagers * -1.1*eRangers + aDisengagers * 0.4*eEngagers
+
+      Red_Fighter_Factor = eFighters * 1.8*aEngagers + eFighters * -1.1*aRangers + eFighters * -0.7*aDisengagers
+      Red_Ranger_Factor = eRangers * 1.1*aFighters + eRangers * 1.1*aDisengagers + eRangers * -2.2*aEngagers
+      Red_Engager_Factor = eEngagers *-1.8*aFighters +  + eEngagers * 2.2*aRangers + eEngagers * -0.4*aDisengagers
+      Red_Disengager_Factor = eDisengagers * 0.7*aFighters + eDisengagers * -1.1*aRangers + eDisengagers * 0.4*aEngagers
+
+      Rolediff_Blue_unscaled = Blue_Fighter_Factor + Blue_Ranger_Factor + Blue_Engager_Factor + Blue_Disengager_Factor
+      Rolediff_Blue = Rolediff_Blue_unscaled * 3.5
+
+      Rolediff_Red_unscaled = Red_Fighter_Factor + Red_Ranger_Factor + Red_Engager_Factor + Red_Disengager_Factor
+      Rolediff_Red = Rolediff_Red_unscaled * 3.5
+
+      dmg_split_exp_blue = pow(max(aAd,aMd),1.55) / 3
+      dmg_split_exp_red = pow(max(eAd,eMd),1.55) / 3
+      
+      Blue_Resist_Factor = aTankiness * dmg_split_exp_red
+      Red_Resist_Factor = eTankiness * dmg_split_exp_blue
+      Blue_Burst_Factor = aBurst * eDps
+      Red_Burst_Factor = eBurst * aDps
+      Blue_DPS_Factor = aDps * eTankiness
+      Red_DPS_Factor = eDps * aTankiness
+      Blue_Tank_Factor = aTankiness * eBurst
+      Red_Tank_Factor = eTankiness * aBurst
+
+      StatDiff_Blue = Blue_Resist_Factor + -1*Red_Resist_Factor + Blue_Burst_Factor + -1*Red_Burst_Factor + Blue_DPS_Factor  +  -1* Red_DPS_Factor + Blue_Tank_Factor + -1* Red_Tank_Factor
+      StatDiff_Red = Red_Resist_Factor + -1*Blue_Resist_Factor + Red_Burst_Factor + -1*Blue_Burst_Factor + Red_DPS_Factor  +  -1* Blue_DPS_Factor + Red_Tank_Factor + -1* Blue_Tank_Factor
+
+      print("Rolediff Blue :", Rolediff_Blue)
+      print("StatDiff Blue :", StatDiff_Blue)
+      print("ScaleDiff Blue: ", Rolediff_Blue + StatDiff_Blue)
+      print("")
+      print("Blue Resistfactor: ", Blue_Resist_Factor)
+      print("Blue Burstfactor: ", Blue_Burst_Factor)
+      print("Blue DPSfactor: ", Blue_DPS_Factor)
+      print("Blue Tankfactor: ", Blue_Tank_Factor)
+      print("")
+      print("Blue Fighterfactor: ", Blue_Fighter_Factor)
+      print("Blue Rangerfactor: ", Blue_Ranger_Factor)
+      print("Blue Engagerfactor: ", Blue_Engager_Factor)
+      print("Blue Disengagerfactor: ", Blue_Disengager_Factor)
+      print("")
+      print("Rolediff Red :", Rolediff_Red)
+      print("StatDiff Red :", StatDiff_Red)
+      print("ScaleDiff Red: ", Rolediff_Red + StatDiff_Red)
+      print("")
+      print("Red Resistfactor: ", Red_Resist_Factor)
+      print("Red Burstfactor: ", Red_Burst_Factor)
+      print("Red DPSfactor: ", Red_DPS_Factor)
+      print("Red Tankfactor: ", Red_Tank_Factor )
+      print("")
+      print("Red Fighterfactor: ", Red_Fighter_Factor)
+      print("Red Rangerfactor: ", Red_Ranger_Factor)
+      print("Red Engagerfactor: ", Red_Engager_Factor)
+      print("Red Disengagerfactor: ", Red_Disengager_Factor)
       print("--------------------------------------------------")
       return
   
@@ -226,13 +277,46 @@
       print_team_stats(Blue_df, Red_df)
       return
     
-  
+
+      
+    def handle_keypress(evt):
+      if evt.key == "6":
+        evt.preventDefault()  # Prevent the default behavior of the '6' key
+        do_that()
+
+    add_event_listener(
+      document.getElementById("searchbar"),
+      "keypress",
+      handle_keypress
+      )
     </py-script>
   <button id="executeButton" py-click="do_that()">Analysis</button>
 
+  <script>
+    document.addEventListener('keydown', function(event) {
+      // Call the on_key_press function when the '6' key is pressed
+      on_key_press(event);
+    });
+  </script>
 
 
-
-
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
   </body>
 </html>
